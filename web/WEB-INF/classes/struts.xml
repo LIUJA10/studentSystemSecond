@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<constant name="struts.objectFactory" value="spring"></constant>
+<package name="xuesheng" namespace="/" extends="struts-default" >
+<interceptors>
+		<!-- 注册拦截器 -->
+				<interceptor name="privilegeInterceptor" class="cn.web.interceptor.PrivilegeInterceptor"></interceptor>
+				
+		<!-- 配置拦截器栈 -->
+				<interceptor-stack name="myStack">
+					<interceptor-ref name="privilegeInterceptor">
+						<param name="excludeMethods">login</param>
+					</interceptor-ref>
+					<interceptor-ref name="defaultStack"></interceptor-ref>
+				</interceptor-stack>
+			</interceptors>
+		<!-- 指定默认拦截器栈 -->
+		<default-interceptor-ref name="myStack"></default-interceptor-ref>
+		
+		<!-- 全局结果集配置 -->
+		<global-results>
+			<result name="toLogin" type="redirect" >/login.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.RuntimeException"></exception-mapping>
+		</global-exception-mappings>
+	<action name="TAdminAction_*" class="cn.web.action.TAdminAction" method="{1}" >
+			<result name="success" type="redirect">/index.htm</result>
+			<result name="error" >/login.jsp</result>
+		</action>
+		<action name="TBanjiAction_*" class="cn.web.action.TBanjiAction" method="{1}" >
+			<result name="success" >/list.jsp</result>
+			<result name="error" >/login.jsp</result>
+		</action>
+		<action name="TChengjiAction_*" class="cn.web.action.TChengjiAction" method="{1}" >
+			<result name="success" >/list.jsp</result>
+			<result name="error" >/login.jsp</result>
+		</action>
+		<action name="TJiafenAction_*" class="cn.web.action.TJiafenAction" method="{1}" >
+			<result name="success" >/list.jsp</result>
+			<result name="error" >/login.jsp</result>
+		</action>
+		<action name="TKoufenAction_*" class="cn.web.action.TKoufenAction" method="{1}" >
+			<result name="success" >/list.jsp</result>
+			<result name="error" >/login.jsp</result>
+		</action>
+		<action name="TXueshengAction_*" class="cn.web.action.TXueshengAction" method="{1}" >
+			<result name="success" >/index1.htm</result>
+			<result name="error" >/login.jsp</result>
+		</action>
+		
+</package>
+</struts>    

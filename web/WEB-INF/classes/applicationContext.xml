@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+	http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    <context:component-scan base-package="cn.service"></context:component-scan>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="configLocation"
+			value="classpath:hibernate.cfg.xml.bak">
+		</property>
+	</bean>
+	<!-- action -->
+	<bean name="TAdminAction" class="cn.web.action.TAdminAction" scope="prototype" >
+		<property name="TAdminService" ref="TAdminService" ></property>
+	</bean>
+	<bean name="TBanjiAction" class="cn.web.action.TBanjiAction" scope="prototype" >
+		<property name="TBanjiService" ref="TBanjiService" ></property>
+	</bean>
+	<bean name="TChengjiAction" class="cn.web.action.TChengjiAction" scope="prototype" >
+		<property name="TChengjiService" ref="TChengjiService" ></property>
+	</bean>
+	<bean name="TJiafenAction" class="cn.web.action.TJiafenAction" scope="prototype" >
+		<property name="TJiafenService" ref="TJiafenService" ></property>
+	</bean>
+	<bean name="TKoufenAction" class="cn.web.action.TKoufenAction" scope="prototype" >
+		<property name="TKoufenService" ref="TKoufenService" ></property>
+	</bean>
+	<bean name="TXueshengAction" class="cn.web.action.TXueshengAction" scope="prototype" >
+		<property name="TXueshengService" ref="TXueshengService" ></property>
+	</bean>
+	<!-- service -->
+	<bean name="TAdminService" class="cn.service.impl.TAdminServiceImpl" >
+		<property name="TAdminDAO" ref="TAdminDAO" ></property>
+	</bean>
+	<bean name="TBanjiService" class="cn.service.impl.TBanjiServiceImpl" >
+		<property name="TBanjiDAO" ref="TBanjiDAO" ></property>
+	</bean>
+	<bean name="TChengjiService" class="cn.service.impl.TChengjiServiceImpl" >
+		<property name="TChengjiDAO" ref="TChengjiDAO" ></property>
+	</bean>
+	<bean name="TJiafenService" class="cn.service.impl.TJiafenServiceImpl" >
+		<property name="TJiafenDAO" ref="TJiafenDAO" ></property>
+	</bean>
+	<bean name="TKoufenService" class="cn.service.impl.TKoufenServiceImpl" >
+		<property name="TKoufenDAO" ref="TKoufenDAO" ></property>
+	</bean>
+	<bean name="TXueshengService" class="cn.service.impl.TXueshengServiceImpl" >
+		<property name="TXueshengDAO" ref="TXueshengDAO" ></property>
+	</bean>
+	<!--Dao -->
+	<bean name="TAdminDAO" class="cn.dao.impl.TAdminDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean name="TBanjiDAO" class="cn.dao.impl.TBanjiDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean name="TChengjiDAO" class="cn.dao.impl.TChengjiDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean name="TJiafenDAO" class="cn.dao.impl.TJiafenDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean name="TKoufenDAO" class="cn.dao.impl.TKoufenDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean name="TXueshengDAO" class="cn.dao.impl.TXueshengDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<!-- 增删改需要加事务  3个步骤-->
+	
+	<!-- 事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 事务的属性 -->
+	<tx:advice id="mytx" transaction-manager="transactionManager">
+		<tx:attributes>
+		<!-- 分别配置增删改的事务方法  isolation隔离级别 SERIALIZABLE 可重复的读取（mysql） -->
+			<tx:method name="del*"/>
+			<tx:method name="update*"/>
+			<tx:method name="add*" isolation="SERIALIZABLE" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 织入 -->
+	<aop:config>
+		<aop:advisor advice-ref="mytx" pointcut="execution(* cn.service.*.*(..))"/>
+	</aop:config>
+	</beans>
